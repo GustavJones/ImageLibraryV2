@@ -38,7 +38,6 @@ int main(int argc, char *argv[]) {
   command = getenv("SHELL");
   command += " -c ";
   command += WEBSITE_DIR / "SetupAdvancedWebserver.sh";
-  std::cout << "Running setup script: " << command << std::endl;
   ImageLibraryV2::Execute(command);
 
   command = "AdvancedWebserver-Configure-Tool --set-data-dir=";
@@ -49,7 +48,6 @@ int main(int argc, char *argv[]) {
   command += "executable";
   command += " ";
   command += EXECUTABLE_DIR / "ImageLibraryV2-Reload";
-  std::cout << "Running setup for /reload" << std::endl;
   ImageLibraryV2::Execute(command);
 
   // Start server
