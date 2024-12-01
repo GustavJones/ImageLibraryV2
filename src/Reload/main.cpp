@@ -1,5 +1,6 @@
 #include "GArgs/GArgs.hpp"
 #include "GParsing/GParsing.hpp"
+#include "Reload/ConfigFile.h"
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -17,13 +18,16 @@ int main(int argc, char *argv[]) {
   char *fContent;
 
   std::string command;
-  const std::filesystem::path EXECUTABLE_PATH = std::filesystem::absolute(argv[0]);
+  const std::filesystem::path EXECUTABLE_PATH =
+      std::filesystem::absolute(argv[0]);
   const std::filesystem::path EXECUTABLE_DIR = EXECUTABLE_PATH.parent_path();
   const std::filesystem::path WEBSITE_DIR =
       EXECUTABLE_PATH.parent_path() / "website";
 
   GArgs::Parser p("Image Library V2 - Reload", "V0.1");
-  p.AddStructure("[flags:help=Program Flags,argument_filter=-,value_amount=0;filepath:help=Path to input/output "
+  p.AddStructure("[flags:help=Program "
+                 "Flags,argument_filter=-,value_amount=0;filepath:help=Path to "
+                 "input/output "
                  "HTTP requests/responses]");
 
   p.AddKey(GArgs::Key("flags", "--help | -h", "Display this message"));
@@ -79,6 +83,11 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
+  ImageLibraryV2::ConfigFile c(EXECUTABLE_DIR / "include-directories.txt");
+
+  for(const auto &directory : c.ReadPaths()) {
+    
+  }
 
   // Response
   resp.version = "HTTP/1.1";
