@@ -461,7 +461,8 @@ void AddDateToLibraryFile(const std::filesystem::path &_websiteDir,
   f.close();
 }
 
-void ConfigureImageURI(const std::filesystem::path &_dataDir,
+void ConfigureImageURI(const std::filesystem::path &_executableDir,
+                       const std::filesystem::path &_dataDir,
                        const std::string &_date,
                        const std::string &_pathWithoutSpaces,
                        const std::filesystem::path &_path,
@@ -481,9 +482,24 @@ void ConfigureImageURI(const std::filesystem::path &_dataDir,
   command += "image/" + _extension;
 
   ImageLibraryV2::Execute(command);
+
+  command = "AdvancedWebserver-Configure-Tool --set-data-dir=";
+  command += _dataDir;
+  command += " ";
+  command += IMAGE_URI_PREFIX + (std::string)"compressed/" + _date + '/' + _pathWithoutSpaces;
+  command += " ";
+  command += "executable";
+  command += " ";
+  command += "'";
+  command += _executableDir / "ImageLibraryV2-Compressed";
+  command += "'";
+
+  ImageLibraryV2::Execute(command);
+
 }
 
 void ConfigureImageDirectory(const std::filesystem::path &_directory,
+                             const std::filesystem::path &_executableDir,
                              const std::filesystem::path &_dataDir,
                              const std::filesystem::path &_websiteDir) {
   std::string pathWithoutSpaces;
@@ -526,7 +542,8 @@ void ConfigureImageDirectory(const std::filesystem::path &_directory,
     }
     AddImageToDateFolderFile(_websiteDir, _dataDir, date, pathWithoutSpaces);
 
-    ConfigureImageURI(_dataDir, date, pathWithoutSpaces, path, extension);
+    ConfigureImageURI(_executableDir, _dataDir, date, pathWithoutSpaces, path, extension);
+    ConfigureDateFolderURI(_dataDir, date);
   }
 }
 
@@ -574,7 +591,7 @@ int main(int argc, char *argv[]) {
     }
 
     std::cout << "Configuring: " << directory << std::endl;
-    ConfigureImageDirectory(directory, DATA_DIR, WEBSITE_DIR);
+    ConfigureImageDirectory(directory, EXECUTABLE_DIR, DATA_DIR, WEBSITE_DIR);
   }
 
   WriteResponse(p["filepath"][0]);

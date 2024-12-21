@@ -8,7 +8,3 @@ foreach(ImageLibraryV2-Component ${ImageLibraryV2-Components})
     add_subdirectory(${ImageLibraryV2-Component})
   endif()
 endforeach()
-
-# add_subdirectory(Reload)
-# add_subdirectory(Server)
-# add_subdirectory(Core)
