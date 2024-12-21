@@ -89,9 +89,9 @@ void ConfigureDateFolderURI(const std::filesystem::path &_dataDir,
   command += " ";
   command += "folder_io";
   command += " ";
-  command += "'";
+  command += "\"";
   command += _dataDir / LIBRARY_DIR_RELATIVE_FROM_DATA_DIR;
-  command += "'";
+  command += "\"";
   command += " ";
   command += "text/html";
 
@@ -149,10 +149,10 @@ void ConfigureCoverImageURI(const std::filesystem::path &_dataDir,
   command += " ";
   command += "file_io";
   command += " ";
-  command += "'";
+  command += "\"";
   command += _dataDir / LIBRARY_DIR_RELATIVE_FROM_DATA_DIR /
              (_date + '.' + _extension);
-  command += "'";
+  command += "\"";
   command += " ";
   command += "image/" + _extension;
 
@@ -222,7 +222,9 @@ void RefreshConfigurations(const std::filesystem::path &_websiteDir,
   command += " ";
   command += "executable";
   command += " ";
+  command += "\"";
   command += _executableDir / "ImageLibraryV2-Reload";
+  command += "\"";
   ImageLibraryV2::Execute(command);
 }
 
@@ -472,9 +474,9 @@ void ConfigureImageURI(const std::filesystem::path &_dataDir,
   command += " ";
   command += "file_io";
   command += " ";
-  command += "'";
+  command += "\"";
   command += _path;
-  command += "'";
+  command += "\"";
   command += " ";
   command += "image/" + _extension;
 
@@ -516,6 +518,7 @@ void ConfigureImageDirectory(const std::filesystem::path &_directory,
     }
 
     if (!HasDate(_websiteDir / "library.html", date)) {
+      ConfigureDateFolderURI(_dataDir, date);
       AddDateToLibraryFile(_websiteDir, date);
       AddDateCoverImage(_dataDir, date, path, extension);
       ConfigureCoverImageURI(_dataDir, date, extension);
@@ -524,7 +527,6 @@ void ConfigureImageDirectory(const std::filesystem::path &_directory,
     AddImageToDateFolderFile(_websiteDir, _dataDir, date, pathWithoutSpaces);
 
     ConfigureImageURI(_dataDir, date, pathWithoutSpaces, path, extension);
-    ConfigureDateFolderURI(_dataDir, date);
   }
 }
 
