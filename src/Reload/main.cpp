@@ -3,7 +3,7 @@
 #include "GParsing/GParsing.hpp"
 #include "Reload/ConfigFile.h"
 #include "TinyEXIF.h"
-#include "stb_image_resize2.h"
+// #include "stb_image_resize2.h"
 #include <cctype>
 #include <cstdlib>
 #include <filesystem>
