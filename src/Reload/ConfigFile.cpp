@@ -8,26 +8,33 @@
 #include <vector>
 
 namespace ImageLibraryV2 {
-ConfigFile::ConfigFile(const std::filesystem::path &_path)
-    : m_filePath(_path) {}
+ConfigFile::ConfigFile(const std::filesystem::path &_path) : m_filePath(_path) {
+  std::fstream f;
+  if (!std::filesystem::exists(m_filePath)) {
+    f.open(m_filePath, std::ios::out);
+    f.close();
+  }
+}
 
 std::vector<std::filesystem::path> ConfigFile::ReadPaths() {
-  std::ifstream f(m_filePath, std::ios::in);
+  std::ifstream f(m_filePath, std::ios::in | std::ios::ate);
   std::vector<std::filesystem::path> out;
   std::string line;
   char c;
 
-  f.seekg(f.beg);
+  if (f.is_open()) {
+    f.seekg(f.beg);
 
-  while (!f.eof()) {
-    f.get(c);
-    if (c == '\n' || f.eof()) {
-      if (line != "") {
-        out.push_back(line);
+    while (!f.eof()) {
+      f.get(c);
+      if (c == '\n' || f.eof()) {
+        if (line != "") {
+          out.push_back(line);
+        }
+        line = "";
+      } else {
+        line += c;
       }
-      line = "";
-    } else {
-      line += c;
     }
   }
 
@@ -56,5 +63,5 @@ void ConfigFile::AppendPath(const std::filesystem::path &_path) {
   WritePaths(read);
 }
 
-ConfigFile::~ConfigFile() {  }
+ConfigFile::~ConfigFile() {}
 } // namespace ImageLibraryV2

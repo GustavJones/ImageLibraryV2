@@ -1,4 +1,4 @@
-#include "Server/Execute.h"
+#include "Core/Core.h"
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
@@ -15,7 +15,7 @@ std::string Execute(const std::string &_command,
     tempDir.replace(replaceIndex, 1, getenv("HOME"));
   }
   std::filesystem::create_directory(tempDir);
-  tempDir = (std::filesystem::path)tempDir / "temp";
+  tempDir = (std::filesystem::path)tempDir;
   std::filesystem::create_directory(tempDir);
   tempDir = (std::filesystem::path)tempDir / "XXXXXX";
 
@@ -36,7 +36,7 @@ std::string Execute(const std::string &_command,
 
   command = _command + " >> " + tempFile;
   if (std::system(command.c_str()) != EXIT_SUCCESS) {
-    remove(tempFile);
+    std::filesystem::remove(tempFile);
     delete[] tempFile;
     return {};
   }
@@ -54,7 +54,7 @@ std::string Execute(const std::string &_command,
 
   f.close();
 
-  remove(tempFile);
+  std::filesystem::remove(tempFile);
   delete[] tempFile;
   return commandOutput;
 }

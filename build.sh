@@ -6,3 +6,5 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_
 
 # Build project
 cmake --build build -j
+
+cp build/src/Reload/ImageLibraryV2-Reload build/src/Server

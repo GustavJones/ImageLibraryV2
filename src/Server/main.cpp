@@ -1,14 +1,16 @@
-#include "Server/Execute.h"
+#include "Core/Core.h"
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
 
+constexpr char WEBSITE_RELATIVE_DIR[] = "website";
+
 int main(int argc, char *argv[]) {
   std::string command;
-  const std::filesystem::path EXECUTABLE_PATH = std::filesystem::absolute(argv[0]);
+  const std::filesystem::path EXECUTABLE_PATH = std::filesystem::canonical(argv[0]);
   const std::filesystem::path EXECUTABLE_DIR = EXECUTABLE_PATH.parent_path();
   const std::filesystem::path WEBSITE_DIR =
-      EXECUTABLE_PATH.parent_path() / "website";
+      EXECUTABLE_PATH.parent_path() / WEBSITE_RELATIVE_DIR;
 
   std::filesystem::create_directory(EXECUTABLE_DIR);
 
@@ -30,7 +32,7 @@ int main(int argc, char *argv[]) {
   // Error if git is not installed
   if (!std::filesystem::exists(WEBSITE_DIR)) {
     std::cerr << "Git clone error!" << std::endl;
-    std::cerr << "Make sure git is installed." << std::endl;
+    std::cerr << "Check your internet connection and make sure git is installed." << std::endl;
     return 1;
   }
 
