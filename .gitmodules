@@ -3,4 +3,7 @@
 	url = https://github.com/GustavJones/GParsing
 [submodule "external/GArgs"]
 	path = external/GArgs
-	url = https://github.com/GustavJones/GArgs
+  url = https://github.com/GustavJones/GArgs
+[submodule "external/TinyEXIF"]
+  path = external/TinyEXIF
+  url = https://github.com/cdcseacave/TinyEXIF.git
