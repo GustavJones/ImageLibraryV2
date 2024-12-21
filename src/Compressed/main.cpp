@@ -99,10 +99,14 @@ int main(int argc, char *argv[]) {
 
   req = ReadRequest(p["filepath"][0]);
 
+  unsigned long index = req.uri.find("/compressed");
+  req.uri.erase(index, 11);
+  std::cout << req.uri << std::endl;
+
   resp.version = "HTTP/1.1";
   resp.response_code = 301;
   resp.response_code_message = "Moved Permanently";
-  resp.headers.push_back({"Location", {"/"}});
+  resp.headers.push_back({"Location", {req.uri}});
   resp.headers.push_back({"Connection", {"close"}});
 
   buf = resp.CreateResponse();
