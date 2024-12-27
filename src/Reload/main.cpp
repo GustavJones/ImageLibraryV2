@@ -139,6 +139,7 @@ void SetupDateFolderFile(const std::filesystem::path &_websiteDir,
 }
 
 void ConfigureCoverImageURI(const std::filesystem::path &_dataDir,
+                            const std::filesystem::path &_executableDir,
                             const std::string &_date,
                             const std::string &_extension) {
   std::string command;
@@ -152,6 +153,21 @@ void ConfigureCoverImageURI(const std::filesystem::path &_dataDir,
   command += "\"";
   command += _dataDir / LIBRARY_DIR_RELATIVE_FROM_DATA_DIR /
              (_date + '.' + _extension);
+  command += "\"";
+  command += " ";
+  command += "image/" + _extension;
+
+  ImageLibraryV2::Execute(command);
+
+  command = "AdvancedWebserver-Configure-Tool --set-data-dir=";
+  command += _dataDir;
+  command += " ";
+  command += IMAGE_URI_PREFIX + (std::string)"compressed/" + _date + '/' + _date;
+  command += " ";
+  command += "executable";
+  command += " ";
+  command += "\"";
+  command += _executableDir / "ImageLibraryV2-Compressed";
   command += "\"";
   command += " ";
   command += "image/" + _extension;
@@ -537,7 +553,7 @@ void ConfigureImageDirectory(const std::filesystem::path &_directory,
       ConfigureDateFolderURI(_dataDir, date);
       AddDateToLibraryFile(_websiteDir, date);
       AddDateCoverImage(_dataDir, date, path, extension);
-      ConfigureCoverImageURI(_dataDir, date, extension);
+      ConfigureCoverImageURI(_dataDir, _executableDir, date, extension);
       SetupDateFolderFile(_websiteDir, _dataDir, date);
     }
     AddImageToDateFolderFile(_websiteDir, _dataDir, date, pathWithoutSpaces);
@@ -556,13 +572,10 @@ int main(int argc, char *argv[]) {
     return validate;
   }
 
-  const std::filesystem::path EXECUTABLE_PATH =
-      std::filesystem::canonical(argv[0]);
+  const std::filesystem::path EXECUTABLE_PATH = std::filesystem::canonical(argv[0]);
   const std::filesystem::path EXECUTABLE_DIR = EXECUTABLE_PATH.parent_path();
-  const std::filesystem::path DATA_DIR =
-      ((std::filesystem::path)p["filepath"][0]).parent_path();
-  const std::filesystem::path WEBSITE_DIR =
-      std::filesystem::canonical(DATA_DIR / WEBSITE_DIR_RELATIVE_FROM_DATA_DIR);
+  const std::filesystem::path DATA_DIR = ((std::filesystem::path)p["filepath"][0]).parent_path();
+  const std::filesystem::path WEBSITE_DIR = std::filesystem::canonical(DATA_DIR / WEBSITE_DIR_RELATIVE_FROM_DATA_DIR);
 
   // Definitions
   GParsing::HTTPRequest req;
@@ -574,8 +587,8 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  RefreshConfigurations(WEBSITE_DIR, EXECUTABLE_DIR, DATA_DIR,
-                        p["filepath"][0]);
+  RefreshConfigurations(WEBSITE_DIR, EXECUTABLE_DIR, DATA_DIR, p["filepath"][0]);
+
   // Processing
   SetupLibraryFile(WEBSITE_DIR);
   ImageLibraryV2::ConfigFile c(EXECUTABLE_DIR / "include-directories.txt");
