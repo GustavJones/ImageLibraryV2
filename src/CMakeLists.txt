@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.15)
 project(ImageLibraryV2-Sources)
 
 file(GLOB ImageLibraryV2-Components "*/")
