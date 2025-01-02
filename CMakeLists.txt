@@ -5,8 +5,19 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 set(BUILD_SHARED_LIBS OFF)
 set(BUILD_STATIC_LIBS ON)
-add_subdirectory(external/TinyEXIF)
-add_subdirectory(external/GArgs)
-add_subdirectory(external/GParsing)
+
+file(GLOB SUBMODULES "external/*")
+
+foreach(SUBMODULE ${SUBMODULES})
+  if(IS_DIRECTORY ${SUBMODULE})
+    file(GLOB CONTENTS "${SUBMODULE}/*.txt")
+    foreach(CONTENT ${CONTENTS})
+      if(EXISTS "${SUBMODULE}/CMakeLists.txt")
+        message(STATUS "Adding submodule: ${SUBMODULE}")
+        add_subdirectory(${SUBMODULE})
+      endif()
+    endforeach()
+  endif()
+endforeach()
 
 add_subdirectory(src)
