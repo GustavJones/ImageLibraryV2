@@ -10,6 +10,7 @@
 #include <ios>
 #include <iostream>
 #include <ostream>
+#include <string>
 #include <vector>
 
 constexpr char WEBSITE_DIR_RELATIVE_FROM_DATA_DIR[] = "..";
@@ -18,6 +19,7 @@ constexpr char TEMPLATES_DIR_RELATIVE_FROM_WEBSITE_DIR[] = "html-templates";
 constexpr char IMAGE_URI_PREFIX[] = "/library/";
 const std::string IMAGE_FOLDER_TILE_IDENTIFIER = "<!-- $image-folder-tile -->";
 const std::string IMAGE_FOLDER_TILE_NAME_IDENTIFIER = "<!-- $image-folder-name -->";
+const std::string IMAGE_FOLDER_TILE_ORDER_IDENTIFIER = "<!--$image-folder-tile-order-->";
 const std::string IMAGE_FOLDER_PAGE_NAME_IDENTIFIER = "<!-- $image-folder-name -->";
 const std::string IMAGE_TILE_IDENTIFIER = "<!-- $image-tile -->";
 const std::string IMAGE_TILE_NAME_IDENTIFIER = "<!-- $image-name -->";
@@ -413,6 +415,20 @@ void SetupLibraryFile(const std::filesystem::path &_websiteDir) {
   }
 }
 
+unsigned long DateStrToUL(std::string _date) {
+  constexpr unsigned short ASCII_START = '0';
+  constexpr unsigned short ASCII_END = '9';
+
+  for (unsigned long i = 0; i < _date.length(); i++) {
+    if (_date[i] < ASCII_START || _date[i] > ASCII_END) {
+      _date.erase(i, 1);
+      i--;
+    }
+  }
+
+  return std::stoul(_date);
+}
+
 void AddDateToLibraryFile(const std::filesystem::path &_websiteDir,
                           const std::string &_date) {
   std::fstream f;
@@ -420,6 +436,7 @@ void AddDateToLibraryFile(const std::filesystem::path &_websiteDir,
   std::string fContent;
   std::string fContentTemplate;
   unsigned long identifierIndex;
+  unsigned long dateLong;
 
   // Read library file
   f.open(_websiteDir / "library.html", std::ios::in | std::ios::ate);
@@ -455,6 +472,14 @@ void AddDateToLibraryFile(const std::filesystem::path &_websiteDir,
     fContentTemplate.replace(identifierIndex,
                              IMAGE_FOLDER_TILE_NAME_IDENTIFIER.length(), _date);
     identifierIndex = fContentTemplate.find(IMAGE_FOLDER_TILE_NAME_IDENTIFIER);
+  }
+
+  dateLong = DateStrToUL(_date);
+
+  // Edit tile template order
+  identifierIndex = fContentTemplate.find(IMAGE_FOLDER_TILE_ORDER_IDENTIFIER);
+  if (identifierIndex != fContentTemplate.npos) {
+    fContentTemplate.replace(identifierIndex, IMAGE_FOLDER_TILE_ORDER_IDENTIFIER.length(), std::to_string(dateLong));
   }
 
   // Replace input identifier with content tile
