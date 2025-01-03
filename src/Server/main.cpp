@@ -14,8 +14,8 @@ int main(int argc, char *argv[]) {
 
   std::filesystem::create_directory(EXECUTABLE_DIR);
 
-  if (argc != 3) {
-    std::cerr << "Not the right amount of arguments, 2 required!" << std::endl;
+  if (argc < 3) {
+    std::cerr << "Not the right amount of arguments, at least 2 required!" << std::endl;
     std::cerr << "Program arguments should include a PEM certificate and key respectively" << std::endl;
     return 1;
   }
@@ -52,24 +52,17 @@ int main(int argc, char *argv[]) {
   command += " ";
   command += EXECUTABLE_DIR / "ImageLibraryV2-Reload";
   ImageLibraryV2::Execute(command);
-
-  // command = "AdvancedWebserver-Configure-Tool --set-data-dir=";
-  // command += WEBSITE_DIR / "server";
-  // command += " ";
-  // command += "/library/compressed/";
-  // command += " ";
-  // command += "cascading_executable";
-  // command += " ";
-  // command += EXECUTABLE_DIR / "ImageLibraryV2-Compressed";
-  // ImageLibraryV2::Execute(command);
   
   // Start server
   command = "AdvancedWebserver --set-data-dir=";
   command += WEBSITE_DIR / "server";
   command += " ";
-  command += argv[1];
-  command += " ";
-  command += argv[2];
+  
+  for (unsigned long i = 1; i < argc; i++) {
+    command += argv[i];
+    command += " ";
+  }
+  
 
   ImageLibraryV2::Execute(command);
   return EXIT_SUCCESS;
