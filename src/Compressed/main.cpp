@@ -187,6 +187,7 @@ int main(int argc, char *argv[]) {
   resp.response_code = 200;
   resp.response_code_message = "OK";
   resp.headers.push_back({"Connection", {"close"}});
+  resp.headers.push_back({"Content-Type", {"image/jpg"}});
   resp.message = fContent;
 
   buf = resp.CreateResponse();
