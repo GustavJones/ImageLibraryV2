@@ -145,9 +145,6 @@ int main(int argc, char *argv[]) {
   f.close();
 
   newImageBuffer = new unsigned char[newImageBufferX * newImageBufferY * newImageBufferChannels]();
-  for (unsigned long i = 0; i < newImageBufferX * newImageBufferY * newImageBufferChannels; i++) {
-    newImageBuffer[i] = '\0';
-  }
 
   std::cout << "Resize Image from Buffer" << std::endl;
   stbir_resize_uint8_linear(originalImageBuffer, originalImageBufferX, originalImageBufferY, 0, newImageBuffer, newImageBufferX, newImageBufferY, 0, (stbir_pixel_layout)newImageBufferChannels);
